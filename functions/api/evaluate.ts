@@ -1,13 +1,16 @@
+/// <reference types="@cloudflare/workers-types" />
 
 // This file is a Cloudflare Pages Function and will be deployed as a serverless API endpoint.
 // It runs on Cloudflare's edge network, not in the user's browser.
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { ApprovalResponse, ApprovalStatus } from '../src/types'; // Note: path changed to src/
+// Import shared types from the frontend source. Since this file lives in functions/api/,
+// we need to go up two levels to reach src/.
+import { ApprovalResponse, ApprovalStatus } from '../../src/types';
 
 // Define the shape of the environment variables passed by Cloudflare
 interface Env {
-  API_KEY: string;
+  GEMINI_API_KEY: string;
 }
 
 const systemInstruction = `
@@ -62,12 +65,12 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const { request, env } = context;
 
     // Check for the API key in the environment variables
-    if (!env.API_KEY) {
-      throw new Error("SERVER_ERROR: API_KEY environment variable is not set.");
+    if (!env.GEMINI_API_KEY) {
+      throw new Error("SERVER_ERROR: GEMINI_API_KEY environment variable is not set.");
     }
 
-    const body = await request.json<{ request?: string }>();
-    const requestJson = body.request;
+    const body = (await request.json().catch(() => ({}))) as { request?: string };
+    const requestJson = body?.request;
 
     if (!requestJson) {
       return new Response(JSON.stringify({ error: 'Bad Request: "request" key missing in JSON body.' }), { 
@@ -76,7 +79,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       });
     }
 
-    const ai = new GoogleGenAI({ apiKey: env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
     
     const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
@@ -89,7 +92,10 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         }
     });
 
-    const jsonText = response.text.trim();
+    const jsonText = (response as any)?.text ? String((response as any).text).trim() : "";
+    if (!jsonText) {
+      throw new Error("AI returned empty response text.");
+    }
     const parsedResponse = JSON.parse(jsonText) as ApprovalResponse;
 
     if (!parsedResponse.decision || !parsedResponse.reason) {
