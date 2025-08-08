@@ -1,0 +1,6 @@
+{
+  "name": "Classroom Reservation AI Agent",
+  "description": "An AI-powered agent to automatically approve, reject, or flag classroom reservation requests based on a set of rules.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
