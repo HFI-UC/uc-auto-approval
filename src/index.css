@@ -2,3 +2,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(100,116,139,.4); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(100,116,139,.6); }
+
+html.dark {
+	color-scheme: dark;
+}
+
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+.fade-in { animation: fade-in .4s ease; }
+@keyframes fade-in { from { opacity:0; transform: translateY(4px);} to {opacity:1; transform: translateY(0);} }

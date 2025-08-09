@@ -46,9 +46,7 @@ const App: React.FC = () => {
       <Header />
       <main className="container mx-auto p-4 md:p-8">
         <div className="max-w-4xl mx-auto">
-          <p className="mb-6 text-slate-600 text-center">
-            Paste a classroom reservation request in any JSON format below. The AI agent will analyze it to ensure the duration is under 2 hours, the purpose is detailed and academic, and that it complies with all classroom usage regulations.
-          </p>
+          {/* Description removed as per request */}
 
           <JsonInput
             value={jsonInput}

@@ -1,0 +1,13 @@
+{
+  "routes": [
+    {
+      "routePath": "/api/evaluate",
+      "mountPath": "/api",
+      "method": "POST",
+      "module": [
+        "api/evaluate.ts:onRequestPost"
+      ]
+    }
+  ],
+  "baseURL": "/"
+}
